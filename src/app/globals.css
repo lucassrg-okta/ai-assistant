@@ -1,0 +1,283 @@
+@import "tailwindcss";
+
+/* :root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  white-space: pre-wrap; 
+  word-break: break-all; 
+}
+
+p code {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+#__next {
+  height: 100%;
+}
+
+#nav-mobile {
+  min-height: 170px;
+}
+
+.nav-item.dropdown .dropdown-item {
+  padding: 0;
+}
+
+.nav-item.dropdown .dropdown-item a {
+  color: inherit;
+}
+
+.nav-item.dropdown .dropdown-item .navbar-item {
+  width: 100%;
+  padding: .55rem 1.5rem;
+}
+
+.result-block-container .result-block {
+  opacity: 1;
+}
+/* CSS for Chatbot messages */
+
+/* input/form */
+.chat-input-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.chat-input-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.message-input {
+  width: 100%;
+  flex: 1;
+  border: 1px solid #d1d5db; /* Tailwind gray-300 */
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #374151; /* Tailwind gray-700 */
+  background-color: #ffffff;
+  outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 150px;
+  overflow-y: auto;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.message-input:focus {
+  border-color: #2140c6;
+  box-shadow: 0 0 0 1px #2140c6;
+}
+
+.message-input::placeholder {
+  color: #9ca3af;
+}
+
+
+
+.user-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+
+.run-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #070c0a;
+  color: white;  
+  border: none;  
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;  
+}
+
+.run-button:hover {
+  background-color: #2140c6;
+}
+
+
+/* user and bot messages */
+.user-message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.message-text {
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+/* Base message container styles */
+
+.user-message,
+.bot-message {
+  /* display: flex;
+  align-items: flex-start; */
+  gap: 12px;
+  padding: 16px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+
+.user-message {
+  justify-content: flex-end;
+  background-color: #f3f4f6;
+}
+
+.bot-message {
+  justify-content: flex-start;  
+  background-color: #e5e7eb;
+}
+
+/* When ReactMarkdown contain headers, reset chat style */
+.bot-message:has(.ReactMarkdown h1),
+.bot-message:has(.ReactMarkdown h2),
+.bot-message:has(.ReactMarkdown h3) {
+  background-color: transparent;
+  padding: 0;
+  max-width: none;
+}
+/* When ReactMarkdown contain headers, hide avatar */
+.bot-message:has(.ReactMarkdown h1) strong,
+.bot-message:has(.ReactMarkdown h2) strong,
+.bot-message:has(.ReactMarkdown h3) strong {
+  display: none;
+}
+/* Reset Markdown content to display plainly */
+.bot-message:has(.ReactMarkdown h1) .ReactMarkdown,
+.bot-message:has(.ReactMarkdown h2) .ReactMarkdown,
+.bot-message:has(.ReactMarkdown h3) .ReactMarkdown {
+  white-space: pre-wrap;
+  width: 100%;
+  line-height: 1.5;
+}
+
+
+/* Message content wrapper styles */
+.message-content {
+  display: flex;
+  flex-direction:row;
+  /* flex: 1; */
+}
+
+.user-message .message-content {
+  align-items: flex-end;
+}
+
+.bot-message .message-content {
+  align-items: flex-start;
+}
+
+
+/* Avatar container styles */
+.user-message strong {
+  font-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.user-message strong {
+  order: 2;
+  overflow: hidden;
+}
+
+.bot-message strong {
+  order: 0;
+}
+
+/* User avatar image */
+
+.user-message strong img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* Spacing between messages */
+.user-message + .bot-message,
+.bot-message + .user-message {
+  margin-top: 8px;
+}
+
+
+/* For tool invocation styles */
+pre {
+  background-color: #ffffff;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  overflow-x: auto;
+  margin: 8px 0;
+  text-align: left;
+}
+
