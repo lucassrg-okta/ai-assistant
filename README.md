@@ -14,7 +14,7 @@ Built with:
 1. Clone this repo:
 
    ```bash
-   git clone https://github.com/your-org/ai-calendar-assistant
+   git clone https://github.com/lucas-gomes_atko/ai-assistant-demo
    cd ai-calendar-assistant
    ```
 
