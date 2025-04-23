@@ -3,15 +3,15 @@
 import React from 'react';
 import Chat from '../../../components/Chat';
 
-const CSRPage: React.FC = () => {
+const PersonalAssistantPage: React.FC = () => {
   return (
     <div className="mb-5" data-testid="csr">
-      <h1 data-testid="csr-title">Sales Assistant</h1>
+      <h1 data-testid="csr-title">Personal Assistant</h1>
       <div data-testid="csr-text">
-        <Chat />
+        <Chat assistant="personal" />
       </div>
     </div>
   );
 };
 
-export default CSRPage; 
+export default PersonalAssistantPage;

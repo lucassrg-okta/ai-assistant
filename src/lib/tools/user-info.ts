@@ -3,7 +3,7 @@ import { tool } from 'ai';
 import { z } from 'zod';
 import { auth0 } from '../auth0';
 
-export const userInfoTool = tool({
+export const userInfo = tool({
   description: "Get information about the currently logged-in user.",
   parameters: z.object({}),
   execute: async () => {
@@ -27,8 +27,20 @@ export const userInfoTool = tool({
         return "I couldn't verify your identity.";
       }
 
+      const user = await response.json();
+
       return {
-        result: await response.json(),
+        message: `Here is your profile information:`,
+        user: {
+          name: user.name,
+          email: user.email,
+          picture: user.picture,
+          email_verified: user.email_verified,
+          nickname: user.nickname,
+          sub: user.sub,
+          given_name: user.given_name,
+          family_name: user.family_name,
+        },
       };
     } catch (err) {
       console.error("Failed to fetch user info:", err);
