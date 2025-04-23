@@ -12,7 +12,7 @@ const auth0AI = new Auth0AI();
 export const calendarCreateAsyncTool = (userID: string) => {
   return auth0AI.withAsyncUserConfirmation({
     userID,
-    audience: process.env.AUTH0_AUDIENCE!,
+    audience: process.env.AUTH0_AUDIENCE!, // required for token binding
     scopes: ["openid", "calendar:read", "calendar:write"],
     bindingMessage: async ({ title, time }) => {
       const cleanTitle = title.replace(/[^a-zA-Z0-9 +\-_.:,#]/g, '');
@@ -20,7 +20,13 @@ export const calendarCreateAsyncTool = (userID: string) => {
       const message = `Schedule: ${cleanTitle} at ${start}`;
       return message.length > 64 ? message.slice(0, 61) + '...' : message;
     },
-    onAuthorizationRequest: "block",
+    // Instead of returning a string, perform a side effect and return void.
+    onAuthorizationRequest: async (authReq, poll) => {
+      // For example, log the notification. You can replace this with any UI side-effect or global event trigger.
+      console.info("An authorization request has been sent to your device. Please check your mobile app and approve the request to schedule the meeting.");
+      // Optionally, you could trigger a notification via an event emitter or update a global UI state.
+      return; // Return void
+    },
     onUnauthorized: async (error) => {
       if (error instanceof AccessDeniedInterrupt) {
         return "The user declined the request.";
@@ -45,7 +51,6 @@ export const calendarCreateAsyncTool = (userID: string) => {
       }),
 
       execute: async ({ title, time, attendees }) => {
-        // Use provided timezone or default to 'UTC'
         const effectiveTimeZone = time.timeZone || 'UTC';
         try {
           const auth = await getGoogleAuth();

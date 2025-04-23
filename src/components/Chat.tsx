@@ -15,6 +15,7 @@ export default function Chat({ assistant }: { assistant: AssistantType }) {
   // Get the client's current timezone from the browser
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  // Pass the timezone as a query parameter to the chat API
   const {
     messages,
     input,
@@ -26,7 +27,6 @@ export default function Chat({ assistant }: { assistant: AssistantType }) {
     api: `/api/assistants/${assistant}/chat?timeZone=${encodeURIComponent(timeZone)}`,
     maxSteps: 5,
   });
-
 
   if (isLoading) return <div>Loading...</div>;
   if (!user) return <div>Please log in to chat.</div>;
@@ -88,7 +88,6 @@ export default function Chat({ assistant }: { assistant: AssistantType }) {
               'result' in part.toolInvocation
             ) {
               const result = (part.toolInvocation as any).result;
-
               return (
                 <React.Fragment key={`tool-content-${index}`}>
                   {result?.user && result?.user.email && (
@@ -119,33 +118,21 @@ export default function Chat({ assistant }: { assistant: AssistantType }) {
               );
             }
 
-
-                        
+            // For tool invocations with state "call", notify the user that an authorization request was sent.
             if (part.type === 'tool-invocation' && part.toolInvocation.state === 'call') {
-              // const callId = part.toolInvocation.toolCallId;
-              // const args = part.toolInvocation.args;
-              // const toolName = part.toolInvocation.toolName;
-
-              // return (
-              //   <div key={`tool-call-${callId}`} className="bg-blue-50 border p-4 rounded mb-4">
-              //     <p className="mb-2 font-semibold">⚙️ Tool Request: <code>{toolName}</code></p>
-              //     <pre className="text-sm bg-white border rounded p-2">{JSON.stringify(args, null, 2)}</pre>
-              //     <div className="mt-3 flex gap-4">
-              //       <button
-              //         className="bg-green-600 text-white px-4 py-2 rounded"
-              //         onClick={() => handleToolApprove(callId, args, toolName)}
-              //       >
-              //         ✅ Yes, do it
-              //       </button>
-              //       <button
-              //         className="bg-gray-300 px-4 py-2 rounded"
-              //         onClick={() => handleToolReject(callId)}
-              //       >
-              //         ❌ No
-              //       </button>
-              //     </div>
-              //   </div>
-              // );
+              return (
+                <div
+                  key={`tool-call-${part.toolInvocation.toolCallId}`}
+                  className="bg-blue-50 border p-4 rounded mb-4"
+                >
+                  <p className="mb-2 font-semibold">
+                    Authorization Request Sent
+                  </p>
+                  <p className="text-sm text-zinc-800">
+                    An authorization request has been sent to your device. Please check your mobile app and approve the request to schedule the meeting.
+                  </p>
+                </div>
+              );
             }
 
             return null;
