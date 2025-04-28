@@ -1,5 +1,5 @@
 // src/app/demo/page.tsx
-
+/* eslint-disable react/no-unescaped-entities */
 import { FINANCIAL_TERMS_DISPLAY } from '@/lib/fga/policy_versions';
 
 export default function DemoInstructionsPage() {
