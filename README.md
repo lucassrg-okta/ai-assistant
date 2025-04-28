@@ -1,38 +1,33 @@
 # 🤖 Auth0 for GenAI Assistants — Calendar, Personal, and Sales Secure AI Agents
 
-An AI-powered platform demonstrating:
+An AI-powered demo showcasing:
 
-- 🗕️ Scheduling follow-up meetings securely via delegated authorization (Google Calendar + CIBA)
-- 🧠 Providing secure financial and competitive insights via RAG (Retrieval Augmented Generation) with FGA-protected documents
-- 🔐 Consent management to unlock protected documents (Financial Terms acceptance)
+- 🗕️ Secure calendar scheduling via delegated CIBA (Google Calendar + Auth0 push MFA)  
+- 🧠 RAG-driven basic vs. advanced financial advice with FGA-protected docs  
+- 🔐 Explicit consent management for unlocking protected content  
 
-Built with:
-- 🧠 Vercel AI SDK
-- 🔐 Auth0 for GenAI (MFA, delegated consent, federated tokens)
-- 🛡️ Auth0 Fine-Grained Authorization (FGA)
-- 🗕️ Google Calendar (via Auth0 social connection)
-- 🤖 OpenAI GPT-4o-mini
+Built with:  
+- 🧠 Vercel AI SDK  
+- 🔐 Auth0 for GenAI (MFA, delegated consent, federated tokens)  
+- 🛡️ Auth0 Fine-Grained Authorization (FGA)  
+- 🗕️ Google Calendar (via Auth0 social connection)  
+- 🤖 OpenAI GPT-4o-mini  
 
 ---
 
 ## 🚀 Quickstart
 
-### 1. Clone this repo
+### 1. Clone & install
 
 ```bash
-git clone https://github.com/lucas-gomes_atko/ai-assistant-demo
+git clone https://github.com/lucassrg-okta/ai-assistant-demo
 cd ai-assistant-demo
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
 ```
 
-### 3. Create a `.env.local` file
+### 2. Create `.env.local`
 
-```dotenv
+```env
 # Auth0
 AUTH0_SECRET=your-long-random-secret
 AUTH0_BASE_URL=http://localhost:3000
@@ -52,155 +47,148 @@ FGA_API_AUDIENCE=https://api.us1.fga.dev/
 
 # OpenAI
 OPENAI_API_KEY=your-openai-api-key
-```
+``` 
 
-### 4. Required Auth0 Configuration
+---
 
-#### 🗕️ Google Social Connection Configuration
+## 🔧 Auth0 Configuration
 
-- Enable the **Google** social connection.
-- Set **Scopes**:
+### a. Google Social Connection  
+- **Enable** Google under Auth0 Connections  
+- **Scopes**:  
+  ```
+  https://www.googleapis.com/auth/calendar.events
+  ```  
+- **Additional Params**:  
+  ```
+  access_type=offline
+  prompt=consent
+  ```
 
-```plaintext
-https://www.googleapis.com/auth/calendar.events
-```
+### b. Push MFA (Guardian)  
+- Navigate to **Security → Multi-factor Authentication**  
+- **Enable** Push Notifications  
+- **Enroll** a test user via QR code  
 
-- Set **Additional Parameters**:
+### c. Auth0 Application (Regular Web App)  
+- **Callback URLs**: `http://localhost:3000/api/auth/callback`  
+- **Logout URLs**: `http://localhost:3000`  
+- **Web Origins**: `http://localhost:3000`  
 
-```plaintext
-access_type=offline
-prompt=consent
-```
+### d. Auth0 API (Custom API)  
+- **Identifier**: `https://calendar-api.tool`  
+- **Scopes**: `calendar:read`, `calendar:write`  
+- **Signing Algorithm**: RS256  
 
-#### 🔐 Enable Push MFA (Guardian)
+---
 
-- Go to **Security → Multi-factor Authentication**.
-- Enable **Push Notification (Guardian Mobile App)**.
-- Enroll user manually (log in and scan QR code).
+## 🛡️ FGA Setup
 
-#### 🔧 Create an Auth0 Application (Regular Web App)
+1. Load this model in OpenFGA:
 
-- Callback URLs: `http://localhost:3000/api/auth/callback`
-- Logout URLs: `http://localhost:3000`
-- Web Origins: `http://localhost:3000`
+    ```fga
+    model
+      schema 1.1
 
-#### 🔧 Create an Auth0 Custom API (Calendar API)
+    type user
 
-- Identifier: `https://calendar-api.tool`
-- Scopes: `calendar:read`, `calendar:write`
-- Signing Algorithm: RS256
+    type policy_version
+      relations
+        define accepted: [user]
 
-### 5. FGA Setup (Fine-Grained Authorization)
+    type doc
+      relations
+        define public_viewer: [user:*]
+        define visible_with_terms: [policy_version#accepted]
+        define viewer: public_viewer or visible_with_terms
+    ```
 
-Load this Authorization Model:
+2. Define your policy version:
 
-```fga
-model
-  schema 1.1
+    ```ts
+    // src/lib/fga/policy_versions.ts
+    export const FINANCIAL_TERMS_VERSION       = 'terms_v2.5';
+    export const FINANCIAL_TERMS_POLICY_OBJECT = `policy:${FINANCIAL_TERMS_VERSION}#accepted`;
+    export const FINANCIAL_TERMS_DISPLAY       = `Financial Terms v2.5`;
+    ```
 
-type user
+---
 
-type policy
-  relations
-    define accepted: [user]
+## 📦 NPM Scripts
 
-type doc
-  relations
-    define public_viewer: [user:*]
-    define visible_with_terms: [policy#accepted]
-    define viewer: public_viewer or visible_with_terms
-```
+| Command                                | Purpose                                                        |
+|----------------------------------------|----------------------------------------------------------------|
+| `npm run dev`                          | Start Next.js dev server                                       |
+| `npm run build`                        | Build for production                                           |
+| `npm run start`                        | Run production build locally                                   |
+| `npm run fga:init`                     | Seed FGA tuples (public/basic & protected docs)                |
+| `npm run fga:validate`                 | Validate FGA permissions for your user                         |
+| `npm run rag:validate`                 | Validate RAG retrieval & tier-filter pipeline                  |
+| `npm run fga:new-policy-version <ver>` | Bump to a new Financial Terms version & reseed FGA tuples      |
 
-### 6. Seed Initial Data
+---
+
+## ✅ Seed & Validate
 
 ```bash
 npm run fga:init
-```
-
-### 7. Validate Setup
-
-```bash
 npm run fga:validate
 npm run rag:validate
 ```
 
-### 8. Start the Development Server
+To bump terms (e.g. `terms_v2.6`):
 
 ```bash
-npm run dev
+npm run fga:new-policy-version terms_v2.6
 ```
-
-Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🛇 Application Architecture
+## 🔍 Local Production Test
 
-| Assistant | Behavior |
-|:----------|:---------|
-| 🗕️ Calendar Assistant | CIAM maturity analysis + meeting scheduling via CIBA |
-| 🧠 Personal Assistant | Financial advice with public + protected content (Terms unlock) |
-| 💼 Sales Assistant | Competitive insights protected behind Terms |
+```bash
+npm run build
+npm run start
+# or full Vercel emulation:
+npx vercel dev
+```
+
+---
+
+## 🛇 Architecture Overview
+
+| Assistant          | Function                                                               |
+|--------------------|------------------------------------------------------------------------|
+| 🗕️ Calendar        | CIAM maturity analysis + meeting scheduling (CIBA + Google Calendar)   |
+| 🧠 Personal        | RAG-based retirement advice (basic vs advanced gated by Terms)         |
+| 💼 Sales           | RAG-based competitive insights gated by Terms                          |
 
 ---
 
 ## 🔐 Security Model
 
-| Flow | Enforcement |
-|:-----|:------------|
-| Identity | Auth0 Universal Login |
-| Delegated Access | OAuth scopes: `calendar:read`, `calendar:write` |
-| Fine-Grained Authorization | Public vs Protected RAG documents |
-| Consent Management | Explicit user Terms acceptance via FGA |
-| CIBA HITL Approvals | Calendar meeting creation |
-| RAG Post-Authorization | Filtering results based on FGA authorization |
-
----
-
-## 👋 Useful Commands
-
-| Command | Purpose |
-|:--------|:--------|
-| `npm run dev` | Start local dev server |
-| `npm run fga:init` | Seed FGA document access |
-| `npm run fga:validate` | Validate document permissions |
-| `npm run rag:validate` | Validate RAG embeddings + fallback |
-
----
-
-## ✨ Dynamic Terms Versioning
-
-Version control inside:
-
-```ts
-/src/lib/fga/policy_versions.ts
-```
-
-Example:
-
-```ts
-export const FINANCIAL_TERMS_VERSION = 'terms_v2';
-export const FINANCIAL_TERMS_POLICY_OBJECT = `policy:${FINANCIAL_TERMS_VERSION}`;
-export const FINANCIAL_TERMS_DISPLAY = `Financial Terms v2`;
-```
-
-✅ Easily bump to `terms_v3`, reseed, and force new acceptances.
+| Flow                  | Enforcement                                          |
+|-----------------------|------------------------------------------------------|
+| Identity              | Auth0 Universal Login                                |
+| Delegated Access      | OAuth scopes → `calendar:read`, `calendar:write`     |
+| Fine-Grained Auth     | Public vs Protected docs via OpenFGA                 |
+| Consent Management    | Financial Terms acceptance via CIBA + FGA write      |
+| HITL Approvals (CIBA) | Push MFA before meeting creation                     |
 
 ---
 
 ## 🌟 Future Enhancements
 
-- GDPR, HIPAA multi-policy support
-- Multi-tenant organization-based protection
-- Delegated actions beyond meetings (Doc signing, emails)
+- GDPR & HIPAA multi-policy support  
+- Multi-tenant org-based document protection  
+- Additional delegated actions (e.g. doc signing, email send)  
 
 ---
 
 ## 📄 License
 
-MIT — use freely, fork widely, demo securely!
+MIT — use freely, fork widely, demo securely!  
 
 ---
 
-# 🧠 Built with 💙 by Auth0
----
+###### Built with 💙 by Auth0
