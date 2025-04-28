@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fga:init": "npx tsx src/scripts/fga-initial-tuples.ts",
+    "fga:validate": "npx tsx src/scripts/fga-validate-tuples.ts",
+    "fga:validate-env": "npx tsx src/scripts/fga-validate-env.ts",
+    "fga:new-policy-version": "npx tsx src/scripts/fga-new-policy-version.ts",
+    "rag:validate": "npx tsx src/scripts/rag-validate.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.16",
@@ -16,10 +21,13 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@openfga/sdk": "^0.8.1",
     "ai": "^4.3.9",
+    "dotenv": "^16.5.0",
     "googleapis": "^148.0.0",
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
+    "pdf-parse": "^1.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",

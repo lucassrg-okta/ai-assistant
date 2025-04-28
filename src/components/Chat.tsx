@@ -12,136 +12,142 @@ export default function Chat({ assistant }: { assistant: AssistantType }) {
   const { user, isLoading } = useUser();
   const threadID = useThreadID(assistant);
 
-  // Get the client's current timezone from the browser
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // Pass the timezone as a query parameter to the chat API
   const {
     messages,
     input,
     handleInputChange,
     handleSubmit,
-    addToolResult,
+    isLoading: isThinking,
   } = useChat({
     id: threadID,
     api: `/api/assistants/${assistant}/chat?timeZone=${encodeURIComponent(timeZone)}`,
     maxSteps: 5,
   });
 
+  const filteredMessages = messages.filter(
+    (message) =>
+      !(
+        message.parts?.[0]?.type === 'tool-invocation' &&
+        message.parts?.[0]?.toolInvocation?.state === 'call'
+      )
+  );
+
   if (isLoading) return <div>Loading...</div>;
   if (!user) return <div>Please log in to chat.</div>;
 
   return (
     <div className="space-y-6">
-      {messages.map((message: Message) => (
+      {filteredMessages.map((message: Message) => (
         <div
           key={message.id}
-          className={message.role === 'user' ? 'user-message' : 'bot-message'}
+          className={`flex items-start space-x-2 transition-all duration-300 ${
+            message.role === 'user' ? 'justify-end' : 'justify-start'
+          }`}
         >
-          <strong>
-            {message.role === 'user' ? (
-              <img
-                src={user.picture}
-                alt="User"
-                className="inline-block w-6 h-6 rounded-full mr-2"
-              />
-            ) : (
-              '🤖'
-            )}
-          </strong>
-
-          {message.parts?.map((part, index) => {
-            if (part.type === 'text') {
-              const isProfileRepeat =
-                part.text.includes('Your email is') &&
-                messages.some(m =>
-                  m.parts?.some(p =>
-                    p.type === 'tool-invocation' &&
-                    p.toolInvocation?.state === 'result' &&
-                    (p.toolInvocation as any)?.result?.user
-                  )
-                );
-
-              const isReauthRepeat =
-                (part.text.includes('connect your Google Calendar') ||
-                  part.text.includes('need permission')) &&
-                messages.some(m =>
-                  m.parts?.some(p =>
-                    p.type === 'tool-invocation' &&
-                    p.toolInvocation?.state === 'result' &&
-                    (p.toolInvocation as any)?.result?.needsReauth
-                  )
-                );
-
-              if (isProfileRepeat || isReauthRepeat) return null;
-
-              return (
-                <div key={`text-${message.id}-${index}`} className="text-sm text-zinc-800">
-                  <ReactMarkdown>{part.text}</ReactMarkdown>
+          {message.role === 'user' ? (
+            <>
+              <div className="flex items-center space-x-2">
+                <div className="flex flex-col items-end">
+                  <div className="bg-blue-100 hover:bg-blue-200 transition-colors text-blue-900 rounded-lg p-3 max-w-2xl">
+                    {message.parts?.map((part, index) =>
+                      part.type === 'text' ? (
+                        <div key={`text-${message.id}-${index}`} className="text-sm">
+                          <ReactMarkdown>{part.text}</ReactMarkdown>
+                        </div>
+                      ) : null
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    {new Date(message.createdAt ?? Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
                 </div>
-              );
-            }
-
-            if (
-              part.type === 'tool-invocation' &&
-              part.toolInvocation?.state === 'result' &&
-              'result' in part.toolInvocation
-            ) {
-              const result = (part.toolInvocation as any).result;
-              return (
-                <React.Fragment key={`tool-content-${index}`}>
-                  {result?.user && result?.user.email && (
-                    <div className="my-4 flex justify-start">
-                      <div className="bg-white border rounded-lg p-4 shadow-md max-w-md">
-                        {result.message && (
-                          <div className="text-sm text-zinc-700 mb-3">
-                            <ReactMarkdown>{result.message}</ReactMarkdown>
+                <img
+                  src={user.picture}
+                  alt="User"
+                  className="w-8 h-8 rounded-full"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center space-x-2">
+                <div className="text-xl">🤖</div>
+                <div className="flex flex-col">
+                  <div className="bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900 rounded-lg p-3 max-w-2xl">
+                    {message.parts?.map((part, index) => {
+                      if (part.type === 'text') {
+                        return (
+                          <div key={`text-${message.id}-${index}`} className="text-sm">
+                            <ReactMarkdown>{part.text}</ReactMarkdown>
                           </div>
-                        )}
-                        <UserProfileCard user={result.user} />
-                      </div>
-                    </div>
-                  )}
-
-                  {result.message && !result?.user?.email && (
-                    <div className="text-sm text-zinc-800 mb-3">
-                      <ReactMarkdown>{result.message}</ReactMarkdown>
-                    </div>
-                  )}
-
-                  {result.needsReauth && result.message && (
-                    <div className="bg-yellow-100 border border-yellow-300 p-4 rounded mb-2">
-                      <ReactMarkdown>{result.message}</ReactMarkdown>
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-            }
-
-            // For tool invocations with state "call", notify the user that an authorization request was sent.
-            if (part.type === 'tool-invocation' && part.toolInvocation.state === 'call') {
-              return (
-                <div
-                  key={`tool-call-${part.toolInvocation.toolCallId}`}
-                  className="bg-blue-50 border p-4 rounded mb-4"
-                >
-                  <p className="mb-2 font-semibold">
-                    Authorization Request Sent
-                  </p>
-                  <p className="text-sm text-zinc-800">
-                    An authorization request has been sent to your device. Please check your mobile app and approve the request to schedule the meeting.
-                  </p>
+                        );
+                      }
+                      if (
+                        part.type === 'tool-invocation' &&
+                        part.toolInvocation?.state === 'result' &&
+                        'result' in part.toolInvocation
+                      ) {
+                        const toolResult = (part.toolInvocation as any).result;
+                        return (
+                          <div key={`tool-profile-${index}`} className="flex flex-col space-y-2">
+                            {toolResult?.user && toolResult?.user.email && (
+                              <>
+                                {toolResult.message && (
+                                  <div className="text-sm text-zinc-700">
+                                    <ReactMarkdown>{toolResult.message}</ReactMarkdown>
+                                  </div>
+                                )}
+                                <UserProfileCard user={toolResult.user} />
+                              </>
+                            )}
+                            {toolResult?.message && !toolResult?.user?.email && (
+                              <div className="text-sm text-zinc-800">
+                                <ReactMarkdown>{toolResult.message}</ReactMarkdown>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }
+                      if (part.type === 'tool-invocation' && part.toolInvocation?.state === 'call') {
+                        return (
+                          <div
+                            key={`tool-call-${part.toolInvocation.toolCallId}`}
+                            className="bg-yellow-50 border border-yellow-200 p-4 rounded text-sm text-yellow-800"
+                          >
+                            <p className="font-semibold mb-1">🔔 Waiting for Authorization...</p>
+                            <p>Please approve the authorization request sent to your mobile device.</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    {new Date(message.createdAt ?? Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
                 </div>
-              );
-            }
-
-            return null;
-          })}
+              </div>
+            </>
+          )}
         </div>
       ))}
 
-      <div className="chat-input-container">
-        <form onSubmit={handleSubmit} className="chat-input-form">
+      {/* Typing indicator */}
+      {isThinking && (
+        <div className="flex items-center space-x-2 text-sm text-gray-500 animate-pulse">
+          <div className="text-xl">🤖</div>
+          <span>Assistant is typing...</span>
+        </div>
+      )}
+
+      {/* Input Area */}
+      <div className="chat-input-container mt-6">
+        <form
+          onSubmit={handleSubmit}
+          className="chat-input-form"
+        >
           <textarea
             className="message-input"
             placeholder="Ask a question"
