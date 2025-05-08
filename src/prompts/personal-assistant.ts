@@ -37,6 +37,7 @@ export function getPersonalPrompt(firstName: string, currentDate: string, timeZo
   - "Who am I?"
   - "What's on my calendar tonight?"
   - "Schedule dinner with my wife tomorrow at 7pm."
+  - "Book some time with my financial advisor tomorrow at 7pm."
   - "Can you help me with retirement planning?" (use get-retirement-advice tool)
   - "What steps should I take to save for retirement?" (use get-retirement-advice tool)
   - "Yes" after financial advice offer → (use acceptFinancialTerms tool)
