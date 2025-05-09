@@ -36,7 +36,7 @@ export const ConnectedAccounts: React.FC = () => {
 
   return (
     <div className="text-sm bg-white border border-gray-200 rounded p-6 mt-10 max-w-md w-full">
-      <h2 className="text-lg font-semibold mb-3">Connected Accounts</h2>
+      <h2 className="text-lg font-semibold mb-3">Linked Accounts</h2>
 
       {loading && <p className="text-gray-500">Loading connected accounts...</p>}
       {error && <p className="text-red-600">{error}</p>}
