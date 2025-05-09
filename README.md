@@ -2,6 +2,7 @@
 
 An AI-powered demo showcasing:
 
+- Authentication with Passkeys and linking (connection) with Google Social connection
 - 🗕️ Secure calendar scheduling via delegated CIBA (Google Calendar + Auth0 push MFA)  
 - 🧠 RAG-driven basic vs. advanced financial advice with FGA-protected docs  
 - 🔐 Explicit consent management for unlocking protected content  
@@ -76,6 +77,22 @@ OPENAI_API_KEY=your-openai-api-key
 - **Identifier**: `https://calendar-api.tool`  
 - **Scopes**: `calendar:read`, `calendar:write`  
 - **Signing Algorithm**: RS256  
+
+
+### e. Authorize Auth0 Application to Use the Management API
+- Navigate to the Client application **→ APIs**
+- Click on the toggle to **Authorize** Auth0 Management API
+- Under permissions, check:
+
+  ```text
+  ✅ read:users
+  ✅ update:users
+  ✅ read:connections
+
+- Click **Update**
+
+### e. Setup Client-initiated Account Linking
+- [Follow the Quickstart documentation](https://auth0.com/ai/docs/client-initiated-account-linking)
 
 ---
 
