@@ -10,15 +10,18 @@ export async function linkAccount(formData: FormData): Promise<void> {
 
   const session = await auth0.getSession();
   const id_token_hint = session?.tokenSet?.idToken;
-  if (!id_token_hint) throw new Error('Missing ID token');
+
+  if (!id_token_hint) {
+    console.error('Missing ID token for linking. Session:', session);
+    throw new Error('You must be logged in to link an account.');
+  }
 
   const params = new URLSearchParams({
     scope: 'link_account openid profile offline_access',
     requested_connection: connection,
     id_token_hint,
-    prompt: 'login',
     returnTo: '/profile',
   });
 
-  redirect(`/auth/login?${params.toString()}`);
+  redirect(`/auth/login?${params.toString()}`); // ✅ correct path for App Router
 }

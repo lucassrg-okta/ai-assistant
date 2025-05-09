@@ -41,16 +41,21 @@ export const ConnectedAccounts: React.FC = () => {
       {loading && <p className="text-gray-500">Loading connected accounts...</p>}
       {error && <p className="text-red-600">{error}</p>}
 
-      {!loading && !error && providers.map((p) => (
-        <LinkSocialAccountButton
-          key={p.provider}
-          provider={p.provider}
-          label={p.label}
-          icon={p.icon}
-          className={p.buttonClass}
-          isConnected={linkedProviderSet.has(p.provider)}
-        />
-      ))}
+      {!loading && !error && providers.map((p) => {
+        const linkedIdentity = identities.find((id) => id.provider === p.provider);
+
+        return (
+            <LinkSocialAccountButton
+            key={p.provider}
+            provider={p.provider}
+            label={p.label}
+            icon={p.icon}
+            className={p.buttonClass}
+            isConnected={!!linkedIdentity}
+            userId={linkedIdentity?.user_id} // ✅ pass it here
+            />
+        );
+        })}
     </div>
   );
 };
