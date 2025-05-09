@@ -20,8 +20,8 @@ Built with:
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/lucassrg-okta/ai-assistant-demo
-cd ai-assistant-demo
+git clone https://github.com/lucassrg-okta/ai-assistant
+cd ai-assistant
 npm install
 ```
 
@@ -42,7 +42,7 @@ FGA_API_URL=https://api.us1.fga.dev
 FGA_STORE_ID=your-fga-store-id
 FGA_CLIENT_ID=your-fga-client-id
 FGA_CLIENT_SECRET=your-fga-client-secret
-FGA_API_TOKEN_ISSUER=https://your-auth0-issuer
+FGA_API_TOKEN_ISSUER=auth.fga.dev
 FGA_API_AUDIENCE=https://api.us1.fga.dev/
 
 # OpenAI
@@ -53,17 +53,14 @@ OPENAI_API_KEY=your-openai-api-key
 
 ## 🔧 Auth0 Configuration
 
-### a. Google Social Connection  
+### a. Google Social Connection  (Follow the instructions on auth0.com/ai - you need a OAuth2 client setup with a test user)
 - **Enable** Google under Auth0 Connections  
 - **Scopes**:  
   ```
   https://www.googleapis.com/auth/calendar.events
   ```  
-- **Additional Params**:  
-  ```
-  access_type=offline
-  prompt=consent
-  ```
+- **Enable Token vault**  
+
 
 ### b. Push MFA (Guardian)  
 - Navigate to **Security → Multi-factor Authentication**  
@@ -103,7 +100,7 @@ OPENAI_API_KEY=your-openai-api-key
         define viewer: public_viewer or visible_with_terms
     ```
 
-2. Define your policy version:
+2. Define your policy version (run fga:init):
 
     ```ts
     // src/lib/fga/policy_versions.ts
