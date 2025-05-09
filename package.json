@@ -19,6 +19,7 @@
     "@auth0/ai-vercel": "^3.0.0",
     "@auth0/nextjs-auth0": "^4.4.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@openfga/sdk": "^0.8.1",
