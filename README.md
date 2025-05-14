@@ -16,6 +16,21 @@ Built with:
 
 ---
 
+🛠 Built With
+This AI-powered assistant demo was created using:
+
+- Auth0 Auth for GenAI
+- Auth0 Guardian / Guardian SDK
+- Next.js App Router
+- Vercel AI SDK
+- Auth0 Next.js SDK
+- Auth0 AI (Vercel) SDK
+- Auth0 Fine-Grained Authorization (FGA) for document-level access control
+- Auth0 OpenFGA SDK
+- Google Calendar integration via delegated consent
+- In-memory RAG (Retrieval-Augmented Generation) for secure, tiered document access
+---
+
 ## 🚀 Quickstart
 
 ### 1. Clone & install
