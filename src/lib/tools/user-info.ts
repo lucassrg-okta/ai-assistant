@@ -30,7 +30,8 @@ export const userInfo = tool({
       const user = await response.json();
 
       return {
-        message: `Here is your profile information:`,
+        // message: `Here is your profile information:`,
+        message: undefined,
         user: {
           name: user.name,
           email: user.email,

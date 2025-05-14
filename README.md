@@ -78,6 +78,7 @@ OPENAI_API_KEY=your-openai-api-key
 - **Scopes**: `calendar:read`, `calendar:write`  
 - **Signing Algorithm**: RS256  
 
+API ID is used for CIBA authentication flow (Auth0 Audience).
 
 ### e. Authorize Auth0 Application to Use the Management API
 - Navigate to the Client application **→ APIs**
@@ -189,15 +190,48 @@ npx vercel dev
 | Consent Management    | Financial Terms acceptance via CIBA + FGA write      |
 | HITL Approvals (CIBA) | Push MFA before meeting creation                     |
 
----
 
-## 🌟 Future Enhancements
-
-- GDPR & HIPAA multi-policy support  
-- Multi-tenant org-based document protection  
-- Additional delegated actions (e.g. doc signing, email send)  
 
 ---
+
+
+# Testing Auth for GenAI
+
+Questions you can ask the AI assistant to validate how it manages identity, authorization, and delegated access.
+Each question triggers a real tool call with behavior based on user permissions, connected accounts, or user approvals.
+
+- *Who am I?* 
+  - 🔧 Tool triggered: userInfo 
+  - 📖 Returns Auth0 user profile (name, email, picture)
+  - ✅ No approval or consent required
+
+
+- *What events do I have for tonight?*
+  - 🔧 Tool triggered: googleCalendarViewTool
+  - 📖 Fetches Google Calendar events
+  - 🔐 Requires a connected Google account
+  - ✅ No extra approval if already connected
+
+- *Schedule a meeting with my financial advisor for 6:30pm tonight*
+  - 🔧 Tool triggered: calendarCreateAsyncTool (CIBA)
+  - 📖 Requests delegated user approval (via CIBA) to create a calendar event
+  - 🔐 Prompts user with a push notification to approve/consent
+  - ✅ If approved, schedules the meeting using user Google Calendar
+
+- *Please provide some retirement advice before my meeting with the financial advisor*
+  - 🔧 Tool triggered: getRetirementAdviceTool
+  - 📖 Searches in-memory RAG documents the user is authorized to view (via FGA)
+  - 🧠 If advanced content is gated, assistant offers basic tips or prompts to accept Terms
+  - ✅ Conditional access based on user permission level
+
+- *I need more detailed advice before the meeting*
+  - 🔧 Tool triggered: acceptFinancialTermsTool (CIBA)
+  - 📖 Prompts user to accept the Financial Terms via delegated authorization
+  - 🔐 If user approve, the assistant grants access by writing a tuple to FGA
+  - 📚 Additional retirement advice documents become available via RAG
+
+---
+
 
 ## 📄 License
 

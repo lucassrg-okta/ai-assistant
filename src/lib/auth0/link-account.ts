@@ -17,11 +17,13 @@ export async function linkAccount(formData: FormData): Promise<void> {
   }
 
   const params = new URLSearchParams({
-    scope: 'link_account openid profile offline_access',
+    scope: 'link_account openid profile offline_access',    
     requested_connection: connection,
     id_token_hint,
+    prompt: 'consent',
+    // connection_scope: 'openid email profile',    
     returnTo: '/profile',
   });
 
-  redirect(`/auth/login?${params.toString()}`); // ✅ correct path for App Router
+  redirect(`/auth/login?${params.toString()}`); 
 }
