@@ -122,15 +122,15 @@ API ID is used for CIBA authentication flow (Auth0 Audience).
 
     type user
 
-    type policy_version
+    type policy
       relations
         define accepted: [user]
 
     type doc
       relations
         define public_viewer: [user:*]
-        define visible_with_terms: [policy_version#accepted]
         define viewer: public_viewer or visible_with_terms
+        define visible_with_terms: [policy#accepted]
     ```
 
 2. Define your policy version (run fga:init):
