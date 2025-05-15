@@ -5,7 +5,7 @@ import { FINANCIAL_TERMS_DISPLAY } from '@/lib/fga/policy_versions';
 export default function DemoInstructionsPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-10">
-      <h1 className="text-3xl font-bold text-center">🧠 Auth0 for GenAI Assistants — RSA Demo</h1>
+      <h1 className="text-3xl font-bold text-center">🧠 Auth0 Auth for GenAI Assistants — RSA Demo</h1>
 
       <section>
         <p className="text-center text-sm text-gray-600">
@@ -84,7 +84,7 @@ export default function DemoInstructionsPage() {
       </section>
 
       <footer className="text-center text-sm text-gray-500 mt-10">
-        Built with 💙 by Auth0 for GenAI
+        Built with 💙 by Auth0
       </footer>
     </div>
   );

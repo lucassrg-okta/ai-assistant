@@ -6,6 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "types": ["tailwindcss", "node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

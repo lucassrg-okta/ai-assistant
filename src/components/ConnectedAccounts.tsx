@@ -17,64 +17,48 @@ export const ConnectedAccounts: React.FC = () => {
     const fetchIdentities = async () => {
       try {
         const res = await fetch('/api/user/identities');
-        if (!res.ok) {
-          throw new Error('Failed to fetch identities');
-        }
-
+        if (!res.ok) throw new Error('Failed to fetch identities');
         const data = await res.json();
         setIdentities(data);
       } catch (err: unknown) {
-        console.error('Error fetching user identities:', err);
+        console.error(err);
         setError('Could not load linked accounts.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchIdentities();
   }, []);
 
   if (loading || isUserLoading) {
-    return <p className="text-sm text-gray-500">Loading linked accounts...</p>;
+    return <p className="text-sm text-gray-400">Loading linked accounts...</p>;
   }
-
   if (error || !user?.sub) {
-    return <p className="text-sm text-red-600">{error ?? 'User not found'}</p>;
+    return <p className="text-sm text-red-500">{error ?? 'User not found'}</p>;
   }
 
-  const isLinkable = providers.some((p) => {
-    const isPrimary = identities.some(
-      (id) => `${id.provider}|${id.user_id}` === user.sub && id.provider === p.provider
-    );
-    return !isPrimary;
-  });
-
-  if (!isLinkable) return null;
+  const isAnyLinkable = providers.some(p => !identities.some(id => `${id.provider}|${id.user_id}` === user.sub && id.provider === p.provider));
+  if (!isAnyLinkable) return null;
 
   return (
-    <div className="text-sm bg-white border border-gray-200 rounded p-6 mt-10 max-w-3xl w-full mx-auto">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Linked Accounts</h2>
-
-      {providers.map((p) => {
-        const isPrimary = identities.some(
-          (id) => `${id.provider}|${id.user_id}` === user.sub && id.provider === p.provider
-        );
-        const linkedIdentity = identities.find((id) => id.provider === p.provider);
-
-        if (isPrimary) return null;
-
-        return (
-          <LinkSocialAccountButton
-            key={p.provider}
-            provider={p.provider}
-            label={p.label}
-            icon={p.icon}
-            className={p.buttonClass}
-            isConnected={!!linkedIdentity}
-            userId={linkedIdentity?.user_id}
-          />
-        );
-      })}
+    <div className="mt-10 max-w-3xl w-full mx-auto p-6 bg-gray-800 border border-gray-700 rounded-2xl">
+      <h2 className="text-xl font-semibold text-white mb-4">Linked Accounts</h2>
+      <div className="space-y-4">
+        {providers.map((p) => {
+          const linked = identities.find(id => id.provider === p.provider);
+          return (
+            <LinkSocialAccountButton
+              key={p.provider}
+              provider={p.provider}
+              label={p.label}
+              icon={p.icon}
+              className={p.buttonClass}
+              isConnected={!!linked}
+              userId={linked?.user_id}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

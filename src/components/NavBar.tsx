@@ -1,96 +1,64 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useState } from 'react';
-import {
-  Collapse,
-  Container,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from 'reactstrap';
+import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
-
-import PageLink from './PageLink';
-import AnchorLink from './AnchorLink';
-import Auth0Logo from './Auth0Logo';
 import { User, Power } from 'lucide-react';
+import Auth0Logo from './Auth0Logo';
 
-const NavBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+export default function NavBar() {
   const { user, isLoading } = useUser();
-  const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div className="nav-container shadow-sm border-b bg-white" data-testid="navbar">
-      <Navbar color="light" light expand="md" className="py-3">
-        <Container className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <NavbarBrand className="me-4">
-              <Auth0Logo />
-            </NavbarBrand>
-            <Nav className="flex-row gap-4" navbar data-testid="navbar-items">
-              <NavItem>
-                <PageLink href="/" className="nav-link text-muted" testId="navbar-home" icon={User} tabIndex={0}>
-                  Home
-                </PageLink>
-              </NavItem>
-            </Nav>
-          </div>
+    <header className="w-full fixed top-0 bg-black text-white border-b border-gray-800 py-4 px-6 z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Logo and Home link */}
+        <div className="flex items-center space-x-6">
+          <Link href="/" className="flex items-center space-x-2">
+            <Auth0Logo className="h-6 w-auto" />
+            <span className="text-xl font-semibold">Home</span>
+          </Link>
+          {/* <nav className="hidden md:flex space-x-6">
+            <Link href="/" className="hover:text-[#eb5424] font-medium">
+              Home
+            </Link>
+          </nav> */}
+        </div>
 
-          <Nav className="d-none d-md-flex align-items-center" navbar>
-            {!isLoading && !user && (
-              <NavItem id="qsLoginBtn">
-                <AnchorLink
-                  href="/auth/login"
-                  className="btn btn-primary"
-                  tabIndex={0}
-                  testId="navbar-login-desktop"
-                  icon={User}>
-                  Log in
-                </AnchorLink>
-              </NavItem>
-            )}
-            {user && (
-              <UncontrolledDropdown nav inNavbar data-testid="navbar-menu-desktop">
-                <DropdownToggle nav caret id="profileDropDown">
+        {/* Auth / User menu */}
+        {!isLoading && (
+          <div className="flex items-center space-x-4">
+            {!user ? (
+              <Link href="/auth/login" className="flex items-center space-x-2 px-4 py-2 bg-[#eb5424] hover:bg-orange-600 rounded-full transition font-medium">
+                <User className="w-5 h-5" />
+                <span>Log in</span>
+              </Link>
+            ) : (
+              <div className="relative group">
+                <button className="flex items-center focus:outline-none" aria-haspopup="true">
                   <img
-                    src={user.picture ?? ''}
-                    alt="Profile"
-                    className="nav-user-profile rounded-circle"
-                    width={40}
-                    height={40}
-                    data-testid="navbar-picture-desktop"
+                    src={user.picture || ''}
+                    alt={user.name || 'User avatar'}
+                    className="w-10 h-10 rounded-full border-2 border-[#eb5424]"
                   />
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem header data-testid="navbar-user-desktop">
-                    {user.name}
-                  </DropdownItem>
-                  <DropdownItem className="dropdown-profile" tag="span">
-                    <PageLink href="/profile" icon={User} className="dropdown-item" tabIndex={0} testId="navbar-profile-desktop">
-                      Profile
-                    </PageLink>
-                  </DropdownItem>
-                  <DropdownItem id="qsLogoutBtn">
-                    <AnchorLink href="/auth/logout" className="dropdown-item" icon={Power} tabIndex={0} testId="navbar-logout-desktop">
-                      Log out
-                    </AnchorLink>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
+                </button>
+                <ul className="absolute right-0 mt-2 w-60 bg-gray-900 text-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <li className="px-4 py-2 border-b border-gray-800 text-sm">{user.name}</li>
+                  <li>
+                    <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
+                      <User className="w-4 h-4 mr-2 text-[#eb5424]" /> Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/auth/logout" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
+                      <Power className="w-4 h-4 mr-2 text-[#eb5424]" /> Log out
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             )}
-          </Nav>
-        </Container>
-      </Navbar>
-    </div>
+          </div>
+        )}
+      </div>
+    </header>
   );
-};
-
-export default NavBar;
+}

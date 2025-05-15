@@ -70,4 +70,4 @@
 
 ---
 
-Built with 💙 by Auth0 for GenAI 🚀
+Built with 💙 by Auth0

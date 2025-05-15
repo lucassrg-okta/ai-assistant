@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -26,10 +27,15 @@ body {
 } */
 
 
+
 body {
+  background-color: #000000; /* Match Auth0 dark theme */
+  color: #ffffff;
+  font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 code {
   white-space: pre-wrap; 

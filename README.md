@@ -1,4 +1,4 @@
-# 🤖 Auth0 for GenAI Assistants — Calendar, Personal, and Sales Secure AI Agents
+# 🤖 Auth0 Auth for GenAI Assistants — Calendar, Personal, and Sales Secure AI Agents
 
 An AI-powered demo showcasing:
 
@@ -9,7 +9,7 @@ An AI-powered demo showcasing:
 
 Built with:  
 - 🧠 Vercel AI SDK  
-- 🔐 Auth0 for GenAI (MFA, delegated consent, federated tokens)  
+- 🔐 Auth0 Auth for GenAI (MFA, delegated consent, federated tokens)  
 - 🛡️ Auth0 Fine-Grained Authorization (FGA)  
 - 🗕️ Google Calendar (via Auth0 social connection)  
 - 🤖 OpenAI GPT-4o-mini  

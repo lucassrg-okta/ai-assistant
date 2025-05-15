@@ -6,22 +6,20 @@ import NavBar from './NavBar'
 import Footer from './Footer';
 
 const Layout = ({ children }) => (
-  <>
+<>
     <Head>
-      <link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossOrigin="anonymous"
-      />
-      <link rel="stylesheet" href="https://cdn.auth0.com/js/auth0-samples-theme/1.0/css/auth0-theme.min.css" />
-      <title>Next.js Sample App</title>
+      <title>Auth0 GenAI Demo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
     </Head>
-    <main id="app" className="d-flex flex-column h-100" data-testid="layout">
+    <div className="min-h-screen flex flex-col bg-black text-white font-sans">
       <NavBar />
-      <Container className="flex-grow-1 mt-5">{children}</Container>
+      <main className="flex-grow w-full bg-black text-white px-4 py-10 sm:py-16">
+        <div className="max-w-3xl mx-auto">
+          {children}
+        </div>
+      </main>
       <Footer />
-    </main>
+    </div>
   </>
 );
 
