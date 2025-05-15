@@ -21,8 +21,6 @@ export default async function ProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
-      {/* Navbar */}
-      <NavBar />
 
       {/* Main content */}
       <main className="pt-24 flex-grow max-w-3xl mx-auto px-6 space-y-8 pb-12">
