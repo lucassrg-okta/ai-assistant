@@ -13,25 +13,20 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo and Home link */}
         <div className="flex items-center space-x-6">
-          <Link href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-2">
             <Auth0Logo className="h-6 w-auto" />
             <span className="text-xl font-semibold">Home</span>
-          </Link>
-          {/* <nav className="hidden md:flex space-x-6">
-            <Link href="/" className="hover:text-[#eb5424] font-medium">
-              Home
-            </Link>
-          </nav> */}
+          </a>
         </div>
 
         {/* Auth / User menu */}
         {!isLoading && (
           <div className="flex items-center space-x-4">
             {!user ? (
-              <Link href="/auth/login" className="flex items-center space-x-2 px-4 py-2 bg-[#eb5424] hover:bg-orange-600 rounded-full transition font-medium">
+              <a href="/auth/login" className="flex items-center space-x-2 px-4 py-2 bg-[#eb5424] hover:bg-orange-600 rounded-full transition font-medium">
                 <User className="w-5 h-5" />
                 <span>Log in</span>
-              </Link>
+              </a>
             ) : (
               <div className="relative group">
                 <button className="flex items-center focus:outline-none" aria-haspopup="true">
@@ -44,14 +39,14 @@ export default function NavBar() {
                 <ul className="absolute right-0 mt-2 w-60 bg-gray-900 text-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                   <li className="px-4 py-2 border-b border-gray-800 text-sm">{user.name}</li>
                   <li>
-                    <Link href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
+                    <a href="/profile" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
                       <User className="w-4 h-4 mr-2 text-[#eb5424]" /> Profile
-                    </Link>
+                    </a>
                   </li>
                   <li>
-                    <Link href="/auth/logout" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
+                    <a href="/auth/logout" className="flex items-center px-4 py-2 text-sm hover:bg-gray-800">
                       <Power className="w-4 h-4 mr-2 text-[#eb5424]" /> Log out
-                    </Link>
+                    </a>
                   </li>
                 </ul>
               </div>
