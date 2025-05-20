@@ -72,6 +72,19 @@ export const ToolResultRender: React.FC<Props> = ({ result, state, toolName }) =
 
   const isCalendar = toolName && calendarToolNames.has(toolName);
 
+  if (isCalendar && result.events && result.events.length === 0) {
+    // show raw message if present, otherwise a default notice
+    return (
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-sm text-gray-800">
+        {result.message ? (
+          <ReactMarkdown>{result.message}</ReactMarkdown>
+        ) : (
+          <p>It looks like you have no events scheduled for this period.</p>
+        )}
+      </div>
+    );
+  }
+
   // Render single calendar event creation card
   if (toolName === 'calendarCreate' && result.summary && result.scheduledAt) {
     return (
