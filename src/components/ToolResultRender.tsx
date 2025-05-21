@@ -69,10 +69,10 @@ export const ToolResultRender: React.FC<Props> = ({ result, state, toolName }) =
   if (toolName === 'getRetirementAdvice' && result.message) {
     return null;
   }
-
+  
   const isCalendar = toolName && calendarToolNames.has(toolName);
 
-  if (isCalendar && result.events && result.events.length === 0) {
+  if (typeof result === 'object' && toolName === 'calendarView' && result.events?.length === 0) {
     // show raw message if present, otherwise a default notice
     return (
       <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-sm text-gray-800">
@@ -84,7 +84,7 @@ export const ToolResultRender: React.FC<Props> = ({ result, state, toolName }) =
       </div>
     );
   }
-
+  
   // Render single calendar event creation card
   if (toolName === 'calendarCreate' && result.summary && result.scheduledAt) {
     return (
@@ -120,7 +120,8 @@ export const ToolResultRender: React.FC<Props> = ({ result, state, toolName }) =
   }
 
   // Render generic result message
-  if (result.message && !result.user?.email && !calendarToolNames.has(toolName ?? '')) {
+  // if (result.message && !result.user?.email && !calendarToolNames.has(toolName ?? '')) {
+    if (typeof result === 'string' ) {
     return (
       <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-sm text-gray-800 space-y-2 overflow-auto">
         <ReactMarkdown
@@ -138,7 +139,7 @@ export const ToolResultRender: React.FC<Props> = ({ result, state, toolName }) =
             ),
           }}
         >
-          {result.message}
+          {result}
         </ReactMarkdown>
       </div>
     );
