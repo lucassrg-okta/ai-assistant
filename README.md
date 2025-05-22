@@ -92,6 +92,9 @@ OPENAI_API_KEY=your-openai-api-key
 - **Identifier**: `https://calendar-api.tool`  
 - **Scopes**: `calendar:read`, `calendar:write`  
 - **Signing Algorithm**: RS256  
+- **Access Settings**:
+  - Allow Skipping User Consent: off
+  - Allow Offline Access: on
 
 API ID is used for CIBA authentication flow (Auth0 Audience).
 
